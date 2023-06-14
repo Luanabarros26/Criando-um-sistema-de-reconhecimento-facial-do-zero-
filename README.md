@@ -1,0 +1,69 @@
+# Criando-um-sistema-de-reconhecimento-facial-do-zero-
+import cv2
+import tensorflow as tf
+import numpy as np
+
+# Carregar o modelo de detecção de faces pré-treinado
+detection_model = tf.saved_model.load('caminho_para_o_modelo_salvo')
+
+# Carregar o modelo de classificação de faces pré-treinado
+classification_model = tf.saved_model.load('caminho_para_o_modelo_salvo')
+
+# Função para pré-processamento das imagens
+def preprocess_image(image):
+    # Realizar pré-processamento necessário na imagem, como redimensionamento e normalização
+    # Retornar a imagem pré-processada
+
+# Função para detecção de faces
+def detect_faces(image):
+    preprocessed_image = preprocess_image(image)
+    # Utilizar o modelo de detecção para encontrar as caixas delimitadoras das faces na imagem
+    # Retornar as caixas delimitadoras das faces encontradas
+
+# Função para classificação de faces
+def classify_faces(image, boxes):
+    preprocessed_faces = []
+    for box in boxes:
+        face = image[box[1]:box[3], box[0]:box[2]]
+        preprocessed_face = preprocess_image(face)
+        preprocessed_faces.append(preprocessed_face)
+    
+    # Utilizar o modelo de classificação para classificar as faces pré-processadas
+    # Retornar as classes ou rótulos das faces classificadas
+
+# Função para desenhar caixas delimitadoras e rótulos nas faces detectadas
+def draw_boxes(image, boxes, labels):
+    for box, label in zip(boxes, labels):
+        cv2.rectangle(image, (box[0], box[1]), (box[2], box[3]), (0, 255, 0), 2)
+        cv2.putText(image, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+
+# Função principal
+def main():
+    # Inicializar a captura de vídeo ou abrir um vídeo existente
+    cap = cv2.VideoCapture(0)  # Use 0 para câmera padrão ou o caminho para o arquivo de vídeo
+    
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        
+        # Detectar faces na imagem
+        boxes = detect_faces(frame)
+        
+        # Classificar as faces detectadas
+        labels = classify_faces(frame, boxes)
+        
+        # Desenhar caixas delimitadoras e rótulos nas faces detectadas
+        draw_boxes(frame, boxes, labels)
+        
+        # Exibir a imagem resultante
+        cv2.imshow('Detecção e Reconhecimento de Faces', frame)
+        
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    
+    # Liberar recursos
+    cap.release()
+    cv2.destroyAllWindows()
+
+if __name__ == '__
